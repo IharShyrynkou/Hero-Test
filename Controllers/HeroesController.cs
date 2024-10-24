@@ -18,8 +18,12 @@ public class HeroesController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<int> Create([FromForm]string name, [FromForm]string alias, [FromForm]string brand)
+    public async Task<IActionResult> Create([FromForm]string name, [FromForm]string alias, [FromForm]string brand)
     {
+        if (string.IsNullOrWhiteSpace(name)) return BadRequest($"Null or empty {nameof(name)} field");
+        if (string.IsNullOrWhiteSpace(alias)) return BadRequest($"Null or empty {nameof(alias)} field");
+        if (string.IsNullOrWhiteSpace(brand)) return BadRequest($"Null or empty {nameof(brand)} field");
+            
         var existingBrand = await _context.Brands.FirstOrDefaultAsync(b => b.Name.ToLower() == brand.ToLower());
 
         if (existingBrand == null)
@@ -41,11 +45,11 @@ public class HeroesController : ControllerBase
         await _context.Heroes.AddAsync(hero);
         await _context.SaveChangesAsync();
     
-        return hero.Id;
+        return Ok(hero.Id);
     }
     
     [HttpGet]
-    public async Task<IActionResult>  Get()
+    public IActionResult Get()
     {
         var heroes = _context.Heroes
             .Where(h => (bool)h.IsActive!)
@@ -61,11 +65,12 @@ public class HeroesController : ControllerBase
     }
     
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(uint id)
     {
-        await _context.Heroes.Where(x => x.Id == id)
-            .ExecuteUpdateAsync(x => x.SetProperty(p => p.IsActive, false));
+        if (id == default) return BadRequest($"Null or negative {nameof(id)} field");
         
+        await _context.Heroes.Where(x => x.Id == id).ExecuteUpdateAsync(x => 
+            x.SetProperty(p => p.IsActive, false));
         await _context.SaveChangesAsync();
         
         return Ok();
