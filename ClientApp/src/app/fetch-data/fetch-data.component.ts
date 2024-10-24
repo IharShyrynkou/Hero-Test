@@ -29,7 +29,6 @@ fetchHeroes(){
       console.log(result)
       this.fetchHeroes()
     }, error => console.error(error));
-
   }
 
 }

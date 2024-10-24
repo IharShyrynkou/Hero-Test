@@ -18,9 +18,9 @@ public class HeroesController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<int> Create(string name, string alias, string brand )
+    public async Task<int> Create([FromForm]string name, [FromForm]string alias, [FromForm]string brand)
     {
-        var existingBrand = await _context.Brands.FirstOrDefaultAsync(b => b.Name == brand);
+        var existingBrand = await _context.Brands.FirstOrDefaultAsync(b => b.Name.ToLower() == brand.ToLower());
 
         if (existingBrand == null)
         {

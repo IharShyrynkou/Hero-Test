@@ -1,0 +1,23 @@
+<form action = "" class="add-hero-form"
+      [formGroup]="form"
+      (ngSubmit)="onSubmit()"
+      >
+  <h1> Add hero</h1>
+
+  <label class="add-hero-label">
+    <input formControlName="name" type="text" placeholder="Hero name">
+  </label>
+<br>
+
+  <label class="add-hero-label">
+    <input formControlName="alias"  type="text" placeholder="Hero alias">
+  </label>
+  <br>
+
+  <label class="add-hero-label">
+    <input formControlName="brand"  type="text" placeholder="Hero brand">
+  </label>
+  <br>
+
+  <button>Submit</button>
+</form>
