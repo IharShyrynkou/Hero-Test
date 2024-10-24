@@ -1,40 +1,31 @@
-﻿using HeroTest.Models;
-using Microsoft.AspNetCore.Mvc;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
+using HeroTest.Models;
 
 namespace HeroTest.Controllers;
 [ApiController]
 [Route("[controller]")]
 public class HeroesController : ControllerBase
 {
-    private readonly ILogger<HeroesController> _logger;
     private readonly SampleContext _context;
 
-    public HeroesController(ILogger<HeroesController> logger, SampleContext context)
+    public HeroesController(SampleContext context)
     {
-        _logger = logger;
         _context = context;
     }
     
     [HttpPost]
     public async Task<IActionResult> Create([FromForm]string name, [FromForm]string alias, [FromForm]string brand)
     {
-        if (string.IsNullOrWhiteSpace(name)) return BadRequest($"Null or empty {nameof(name)} field");
+        if (string.IsNullOrWhiteSpace(name))  return BadRequest($"Null or empty {nameof(name)} field");
         if (string.IsNullOrWhiteSpace(alias)) return BadRequest($"Null or empty {nameof(alias)} field");
         if (string.IsNullOrWhiteSpace(brand)) return BadRequest($"Null or empty {nameof(brand)} field");
             
-        var existingBrand = await _context.Brands.FirstOrDefaultAsync(b => b.Name.ToLower() == brand.ToLower());
+        var existingBrand = await _context.Brands.FirstOrDefaultAsync(b => b.Name.ToLower() == brand.ToLower()) 
+                            ?? new Brand { Name = brand };
 
-        if (existingBrand == null)
-        {
-            existingBrand = new Brand()
-            {
-                Name = brand
-            };
-        }
-        
-        var hero = new Hero()
+        var hero = new Hero
         {
             Name = name,
             Alias = alias,
@@ -55,9 +46,9 @@ public class HeroesController : ControllerBase
             .Where(h => (bool)h.IsActive!)
             .Include(x => x.Brand).Select(x => new 
             {
-                Id = x.Id,
-                Name = x.Name,
-                Alias = x.Alias,
+                x.Id,
+                x.Name,
+                x.Alias,
                 Brand = x.Brand.Name
             });
         
@@ -76,4 +67,3 @@ public class HeroesController : ControllerBase
         return Ok();
     }
 }
-
