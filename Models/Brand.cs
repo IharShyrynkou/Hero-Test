@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace HeroTest.Models;
+﻿namespace HeroTest.Models;
 
 public partial class Brand
 {
