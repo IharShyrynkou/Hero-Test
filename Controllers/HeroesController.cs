@@ -15,6 +15,13 @@ public class HeroesController : ControllerBase
         _context = context;
     }
     
+    /// <summary>
+    /// Create a hero
+    /// </summary>
+    /// <param name="name">Hero Name</param>
+    /// <param name="alias">Hero alias</param>
+    /// <param name="brand">Hero brand</param>
+    /// <returns>Ok if all is ok</returns>
     [HttpPost]
     public async Task<IActionResult> Create([FromForm]string name, [FromForm]string alias, [FromForm]string brand)
     {
@@ -22,14 +29,20 @@ public class HeroesController : ControllerBase
         if (string.IsNullOrWhiteSpace(alias)) return BadRequest($"Null or empty {nameof(alias)} field");
         if (string.IsNullOrWhiteSpace(brand)) return BadRequest($"Null or empty {nameof(brand)} field");
             
-        var existingBrand = await _context.Brands.FirstOrDefaultAsync(b => b.Name.ToLower() == brand.ToLower()) 
-                            ?? new Brand { Name = brand };
+        var existingBrand = await _context.Brands.FirstOrDefaultAsync(b => b.Name.ToLower() == brand.ToLower());
 
+        if (existingBrand == null)
+        {
+            existingBrand = new Brand { Name = brand };
+            await _context.AddAsync(existingBrand);
+            await _context.SaveChangesAsync();
+            existingBrand = await _context.Brands.FirstOrDefaultAsync(b => b.Name == brand);
+        }
+        
         var hero = new Hero
         {
             Name = name,
             Alias = alias,
-            Brand = existingBrand,
             BrandId = existingBrand.Id
         };
         
@@ -39,11 +52,15 @@ public class HeroesController : ControllerBase
         return Ok(hero.Id);
     }
     
+    /// <summary>
+    /// Get list of all heroes
+    /// </summary>
+    /// <returns>Ok if all is ok</returns>
     [HttpGet]
     public IActionResult Get()
     {
         var heroes = _context.Heroes
-            .Where(h => (bool)h.IsActive!)
+            //.Where(h => (bool)h.IsActive!)
             .Include(x => x.Brand).Select(x => new 
             {
                 x.Id,
@@ -55,6 +72,11 @@ public class HeroesController : ControllerBase
         return Ok(heroes);
     }
     
+    /// <summary>
+    /// Delete hero by id
+    /// </summary>
+    /// <param name="id">Hero id</param>
+    /// <returns>Ok if all is ok</returns>
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(uint id)
     {

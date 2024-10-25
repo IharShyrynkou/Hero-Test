@@ -3,7 +3,6 @@
       (ngSubmit)="onSubmit()"
       >
   <h1> Add hero</h1>
-
   <label class="add-hero-label">
     <input formControlName="name" type="text" placeholder="Hero name" required>
 
@@ -38,6 +37,10 @@
 
   </label>
   <br>
+
+  <div class="text-success" *ngIf="(isSuccess)">
+    <span>Hero was successfully added</span>
+  </div>
 
   <button>Submit</button>
 </form>

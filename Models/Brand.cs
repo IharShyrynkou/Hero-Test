@@ -1,4 +1,6 @@
-﻿namespace HeroTest.Models;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace HeroTest.Models;
 
 public partial class Brand
 {
@@ -6,8 +8,8 @@ public partial class Brand
     {
         Heroes = new HashSet<Hero>();
     }
-
-    public int Id { get; set; } = 1;
+    
+    public int Id { get; set; }
     public string Name { get; set; } = null!;
     public bool? IsActive { get; set; }
     public DateTime CreatedOn { get; set; }

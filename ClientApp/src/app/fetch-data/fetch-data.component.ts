@@ -25,10 +25,14 @@ fetchHeroes(){
   disableHero(id:Number){
 
     this.http.delete(this.baseUrl + 'heroes/' + id).subscribe(result => {
-      console.log(id)
-      console.log(result)
+      // console.log(id)
+      // console.log(result)
       this.fetchHeroes()
-    }, error => console.error(error));
+      }, error =>
+        {
+          // console.error(error)
+        }
+      );
   }
 
 }

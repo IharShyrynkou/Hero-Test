@@ -33,9 +33,11 @@ export class AddHeroComponent {
   }
 
   isFormSubmitted: boolean = false;
+  isSuccess: boolean = false;
 
   onSubmit(){
-
+    
+    this.isSuccess = false
     this.isFormSubmitted = true;
 
     if(this.form.valid){
@@ -45,7 +47,20 @@ export class AddHeroComponent {
       fd.append('brand', this.form.value.brand!)
 
       this.http.post(this.baseUrl + 'heroes', fd ).subscribe(result => {
-      },error => console.error(error));
+          this.isFormSubmitted = false
+          this.isSuccess = true
+          this.form.reset()
+      },
+          error => {
+        this.isSuccess = false
+        //console.error(error)
+      });
+
+
     }
+  }
+
+  onClickEvent() {
+
   }
 }
