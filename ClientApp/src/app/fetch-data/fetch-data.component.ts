@@ -16,7 +16,7 @@ export class FetchDataComponent {
   }
 
 fetchHeroes(){
-  this.http.get<Hero[]>(this.baseUrl + 'heroes').subscribe(result => {
+  this.http.get<Hero[]>(this.baseUrl + 'heroes' + '?isActiveFilter=true').subscribe(result => {
     console.log(result)
     this.heroes = result;
   }, error => console.error(error));
@@ -42,4 +42,5 @@ interface Hero {
   Name: String;
   Alias: String;
   Brand: String;
+  IsActive:boolean;
 }

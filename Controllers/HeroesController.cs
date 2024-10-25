@@ -57,19 +57,33 @@ public class HeroesController : ControllerBase
     /// </summary>
     /// <returns>Ok if all is ok</returns>
     [HttpGet]
-    public IActionResult Get()
+    public IActionResult Get([FromQuery]bool isActiveFilter = false)
     {
-        var heroes = _context.Heroes
-            //.Where(h => (bool)h.IsActive!)
-            .Include(x => x.Brand).Select(x => new 
-            {
-                x.Id,
-                x.Name,
-                x.Alias,
-                Brand = x.Brand.Name
-            });
-        
-        return Ok(heroes);
+        if (isActiveFilter)
+        {
+            return Ok(_context.Heroes
+                .Where(h=> h.IsActive == true)
+                .Include(x => x.Brand).Select(x => new 
+                {
+                    x.Id,
+                    x.Name,
+                    x.Alias,
+                    x.IsActive,
+                    Brand = x.Brand.Name
+                }));
+        }
+        else
+        {
+            return Ok(_context.Heroes
+                .Include(x => x.Brand).Select(x => new 
+                {
+                    x.Id,
+                    x.Name,
+                    x.Alias,
+                    x.IsActive,
+                    Brand = x.Brand.Name
+                }));
+        }
     }
     
     /// <summary>
