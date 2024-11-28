@@ -1,0 +1,46 @@
+<form action = "" class="add-hero-form"
+      [formGroup]="form"
+      (ngSubmit)="onSubmit()"
+      >
+  <h1> Add hero</h1>
+  <label class="add-hero-label">
+    <input formControlName="name" type="text" placeholder="Hero name" required>
+
+    <div class="text-danger"
+         *ngIf="form.controls['name'].invalid && (isFormSubmitted || form.controls['name'].touched || form.controls['name'].dirty)">
+      <span *ngIf="form.controls['name'].errors?.['required']">Name field is required</span>
+      <span *ngIf="form.controls['name'].errors?.['minlength']">Minimum length is two characters</span>
+    </div>
+
+  </label>
+<br>
+  <label class="add-hero-label">
+    <input formControlName="alias"  type="text" placeholder="Hero alias" required>
+
+    <div class="text-danger"
+         *ngIf="form.controls['alias'].invalid && (isFormSubmitted || form.controls['alias'].touched || form.controls['alias'].dirty)">
+      <span *ngIf="form.controls['alias'].errors?.['required']">Hero field is required</span>
+      <span *ngIf="form.controls['alias'].errors?.['minlength']">Minimum length is two characters</span>
+    </div>
+
+  </label>
+  <br>
+
+  <label class="add-hero-label">
+    <input formControlName="brand"  type="text" placeholder="Hero brand" required>
+
+    <div class="text-danger"
+         *ngIf="form.controls['brand'].invalid && (isFormSubmitted || form.controls['brand'].touched || form.controls['brand'].dirty)">
+      <span *ngIf="form.controls['brand'].errors?.['required']">Brand field is required</span>
+      <span *ngIf="form.controls['brand'].errors?.['minlength']">Minimum length is two characters</span>
+    </div>
+
+  </label>
+  <br>
+
+  <div class="text-success" *ngIf="(isSuccess)">
+    <span>Hero was successfully added</span>
+  </div>
+
+  <button>Submit</button>
+</form>
